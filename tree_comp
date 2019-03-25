@@ -1,0 +1,27 @@
+
+import requests
+import hashlib
+from pprint import pprint
+import imagehash
+from PIL import Image
+
+result = {}
+url = "https://treetracker-dev.nyc3.digitaloceanspaces.com/2018.06.14.19.40.59_1d3caa37-f8fa-49ee-a7bd-41f3cbe450c7_IMG_20180614_121404_811444820.jpg"
+fname = "images/" + url.split('/')[-1]
+result['url'] = url
+result['fname'] = fname
+print(result)
+r = requests.get(url, allow_redirects=True)
+content = r.content
+with open(fname, 'wb') as temp_file:
+    temp_file.write(content)
+print(result)
+
+
+m = hashlib.sha1()
+m.update(content)
+result['hash'] = m.hexdigest()
+
+
+result['dhash'] = str(imagehash.average_hash(Image.open(result["fname"])))
+pprint(result)
